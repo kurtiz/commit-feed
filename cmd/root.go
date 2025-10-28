@@ -1,6 +1,8 @@
 /*
-Copyright © 2025 Aaron Will Djaba <aaronwilldjaba@outlook.com>
+Copyright © 2025
+Aaron Will Djaba <aaronwilldjaba@outlook.com>
 */
+
 package cmd
 
 import (
@@ -9,38 +11,44 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
+// rootCmd represents the base command when called without subcommands
 var rootCmd = &cobra.Command{
-	Use:   "commit-feed.git",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Use:   "commitfeed",
+	Short: "Generate AI-powered social media posts from your Git commits.",
+	Long: `CommitFeed is a developer tool that reads your Git commit history
+and uses AI to automatically generate engaging, platform-ready posts for
+LinkedIn, Twitter/X, and other social platforms.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+💡 Key features:
+  • Reads real Git commits and summarizes your recent work.
+  • Uses AI models (Hugging Face, OpenAI, Gemini, etc.) to craft posts.
+  • Generates optimized content for LinkedIn and Twitter by default.
+  • Lets you preview or publish posts directly from your terminal.
+  • Stores API keys securely in ~/.commit-feed/config.json.
+
+Examples:
+  # Generate posts for your latest commits
+  commitfeed generate
+
+  # Generate posts only for Twitter
+  commitfeed generate --platforms=twitter
+
+  # Generate posts for the last 5 commits
+  commitfeed generate --range HEAD~5..HEAD
+
+  # Automatically publish generated posts (coming soon)
+  commitfeed generate --post
+`,
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
+// Execute adds all child commands to the root command and handles flag setup
 func Execute() {
-	err := rootCmd.Execute()
-	if err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.commit-feed.git.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
+	// Global flags and configuration can be added here
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
