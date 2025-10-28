@@ -28,7 +28,7 @@ Each commit represents a meaningful code change, bug fix, or feature update.
 	for _, platform := range platforms {
 		switch strings.ToLower(platform) {
 		case "linkedin":
-			sb.WriteString(`• LinkedIn: Write a friendly and professional summary (2-4 sentences). Explain what changed and why it matters to developers or users.
+			sb.WriteString(`• LinkedIn: Write a friendly and professional summary (5-6 sentences). Explain what changed and why it matters to developers or users.
 `)
 		case "twitter", "x":
 			sb.WriteString(`• Twitter/X: Write a short, catchy summary under 280 characters. Include emojis or hashtags if natural.
