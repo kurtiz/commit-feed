@@ -16,26 +16,21 @@ type HuggingFaceProvider struct {
 	model  string
 }
 
-// NewHuggingFaceProvider creates a new provider (default model can be overridden later)
 func NewHuggingFaceProvider(apiKey string) *HuggingFaceProvider {
 	return &HuggingFaceProvider{
 		apiKey: apiKey,
-		model:  "openai/gpt-oss-20b:groq", // default chat-capable model
+		model:  "openai/gpt-oss-20b:groq", // chat-capable model
 	}
 }
 
 // GeneratePosts builds a prompt and requests AI-generated posts
-func (h *HuggingFaceProvider) GeneratePosts(commits []git.Commit) (*GeneratedPosts, error) {
-	prompt := buildPrompt(commits)
+func (h *HuggingFaceProvider) GeneratePosts(commits []git.Commit, platforms []string) (*GeneratedPosts, error) {
+	prompt := buildPrompt(commits, platforms)
 
-	// Build OpenAI-style chat request
 	payload := map[string]interface{}{
 		"model": h.model,
 		"messages": []map[string]string{
-			{
-				"role":    "user",
-				"content": prompt,
-			},
+			{"role": "user", "content": prompt},
 		},
 		"stream": false,
 	}
@@ -59,12 +54,10 @@ func (h *HuggingFaceProvider) GeneratePosts(commits []git.Commit) (*GeneratedPos
 	defer resp.Body.Close()
 
 	data, _ := io.ReadAll(resp.Body)
-
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("huggingface error: %s", string(data))
 	}
 
-	// Parse Hugging Face chat completion response
 	var parsed struct {
 		Choices []struct {
 			Message struct {
@@ -72,18 +65,13 @@ func (h *HuggingFaceProvider) GeneratePosts(commits []git.Commit) (*GeneratedPos
 			} `json:"message"`
 		} `json:"choices"`
 	}
-
 	if err := json.Unmarshal(data, &parsed); err != nil {
 		return nil, fmt.Errorf("failed to parse huggingface response: %v", err)
 	}
-
 	if len(parsed.Choices) == 0 || parsed.Choices[0].Message.Content == "" {
 		return nil, fmt.Errorf("no response content returned from model")
 	}
 
-	// Extract clean message text
 	text := parsed.Choices[0].Message.Content
-
-	// Use existing parser to split LinkedIn/Twitter sections
 	return parseResponse(text), nil
 }

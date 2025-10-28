@@ -21,14 +21,15 @@ func NewDeepSeekProvider(apiKey string) *DeepSeekProvider {
 	return &DeepSeekProvider{apiKey: apiKey}
 }
 
-func (d *DeepSeekProvider) GeneratePosts(commits []git.Commit) (*GeneratedPosts, error) {
+func (d *DeepSeekProvider) GeneratePosts(commits []git.Commit, platforms []string) (*GeneratedPosts, error) {
 	body := map[string]interface{}{
 		"model": "deepseek-chat",
 		"messages": []map[string]string{
 			{"role": "system", "content": "You are CommitFeed, summarizing commits into social posts."},
-			{"role": "user", "content": buildPrompt(commits)},
+			{"role": "user", "content": buildPrompt(commits, platforms)},
 		},
 	}
+
 	data, _ := json.Marshal(body)
 
 	req, _ := http.NewRequest("POST", "https://api.deepseek.com/v1/chat/completions", bytes.NewBuffer(data))
@@ -48,7 +49,9 @@ func (d *DeepSeekProvider) GeneratePosts(commits []git.Commit) (*GeneratedPosts,
 			} `json:"message"`
 		} `json:"choices"`
 	}
-	json.NewDecoder(resp.Body).Decode(&parsed)
+	if err := json.NewDecoder(resp.Body).Decode(&parsed); err != nil {
+		return nil, fmt.Errorf("failed to parse deepseek response: %v", err)
+	}
 
 	if len(parsed.Choices) == 0 {
 		return nil, fmt.Errorf("no response from deepseek")

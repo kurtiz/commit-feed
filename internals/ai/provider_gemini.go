@@ -23,10 +23,11 @@ func NewGeminiProvider(apiKey string) *GeminiProvider {
 	return &GeminiProvider{client: client}
 }
 
-func (g *GeminiProvider) GeneratePosts(commits []git.Commit) (*GeneratedPosts, error) {
-	text := buildPrompt(commits)
+func (g *GeminiProvider) GeneratePosts(commits []git.Commit, platforms []string) (*GeneratedPosts, error) {
+	prompt := buildPrompt(commits, platforms)
 
-	resp, err := g.client.GenerativeModel("gemini-1.5-flash").GenerateContent(context.Background(), genai.Text(text))
+	resp, err := g.client.GenerativeModel("gemini-1.5-flash").
+		GenerateContent(context.Background(), genai.Text(prompt))
 	if err != nil {
 		return nil, fmt.Errorf("gemini error: %v", err)
 	}

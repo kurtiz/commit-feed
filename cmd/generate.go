@@ -89,7 +89,7 @@ Examples:
 			return
 		}
 
-		posts, err := provider.GeneratePosts(commits)
+		posts, err := provider.GeneratePosts(commits, targetPlatforms)
 		if err != nil {
 			fmt.Println("❌ Failed to generate posts:", err)
 			return

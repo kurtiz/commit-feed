@@ -8,5 +8,5 @@ type GeneratedPosts struct {
 }
 
 type Provider interface {
-	GeneratePosts(commits []git.Commit) (*GeneratedPosts, error)
+	GeneratePosts(commits []git.Commit, platforms []string) (*GeneratedPosts, error)
 }
