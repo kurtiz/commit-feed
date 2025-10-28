@@ -3,7 +3,7 @@ name: Release CommitFeed
 on:
   push:
     tags:
-      - 'v*'  # e.g. v1.0.0
+      - "v*" # e.g. v1.0.0
 
 permissions:
   contents: write
@@ -93,7 +93,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          name: "CommitFeed ${{ github.ref_name }}"
+          name: ${{ github.ref_name }}
           draft: false
           prerelease: false
           generate_release_notes: true
