@@ -1,78 +1,205 @@
+
+
 # CommitFeed
 
-A small CLI project written in Go. Provides a foundation for a Cobra-based command-line tool.
+> ✨ *Turn your Git commits into engaging social media updates — automatically.*
 
-## Overview
+**CommitFeed** is a command-line tool written in Go that reads your Git commit history, summarizes recent changes, and uses AI to generate ready-to-post content for platforms like **LinkedIn** and **Twitter/X**.
 
-`commit-feed` is a lightweight CLI application scaffolded with Cobra. It currently contains a root command and basic flag wiring. This repository is intended as the starting point for a tool that works with commit data or feeds.
+Perfect for open-source maintainers, indie hackers, or dev teams who want to share progress updates directly from their terminal.
 
-## Prerequisites
 
-- Go 1.18+ installed and on your PATH (the project uses Go modules).
-- A terminal (PowerShell is used in examples below).
+## ⚡Features
 
-## Build
+* 🪄 **AI-powered post generation** — uses Hugging Face (or any compatible LLM) to craft natural, developer-friendly posts.
+* 🧾 **Reads real Git history** — pulls your recent commits and formats them into summaries.
+* 🌍 **Multi-platform support** — generates platform-optimized versions for LinkedIn and Twitter.
+* ⚙️ **Configurable AI providers** — choose between Hugging Face, OpenAI, Gemini, DeepSeek, or Grok.
+* 🏡 **First-time setup wizard** — built with [Charm’s BubbleTea](https://github.com/charmbracelet/bubbletea) for a smooth CLI experience.
+* 🔐 **Secure local config** — stores your API keys safely in `~/.commit-feed/config.json`. (_plans in place to encrypt the keys_)
+* 🧩 **Post automation** — optionally publish posts directly with the `--post` flag (coming soon).
 
-Open PowerShell and run the following from the repository root:
 
-```powershell
-Set-Location -Path 'C:\Users\AaronWillDjaba\Documents\go\commit-feed'
-go build -v -o commit-feed.exe .
+## 📦 Installation
+
+### From source
+
+You’ll need **Go 1.21+** installed.
+
+```bash
+git clone https://github.com/kurtiz/commit-feed.git
+cd commit-feed
+go build -o commitfeed .
 ```
 
-This produces `commit-feed.exe` (Windows) in the current directory.
+Then run it:
 
-You can also build for your platform with the standard `go build` form:
-
-```powershell
-go build ./...
+```bash
+./commitfeed generate
 ```
 
-## Run / Usage
+Or install directly into your `$GOPATH/bin`:
 
-The project uses Cobra for CLI handling. The root command `Use` value is defined as `commit-feed.git` in `cmd/root.go`.
-
-Example (run built binary):
-
-```powershell
-# from project root after building
-.\commit-feed.exe --help
-
-# or run directly with `go run` during development
-go run ./main.go --help
+```bash
+go install github.com/kurtiz/commit-feed.git@latest
 ```
 
-There is currently a simple boolean flag on the root command:
+## 🧰 First Run Setup
 
-```powershell
-# shorthand -t or --toggle
-.\commit-feed.exe -t
+When you run `commitfeed` for the first time, it launches a **beautiful interactive setup wizard** that guides you through:
+
+1. Selecting your preferred AI provider (Hugging Face, OpenAI, Gemini, DeepSeek, Grok, etc.)
+2. Providing your API key (or skipping for default free mode)
+3. Saving preferences to `~/.commit-feed/config.json`
+
+Example config file:
+
+```json
+{
+  "provider": "huggingface",
+  "api_key": "API_KEY",
+  "default_platforms": [
+    "linkedin",
+    "twitter"
+  ]
+}
 ```
 
-The `--help` output will show available flags and subcommands as the project grows.
+## 💻 Usage
 
-## Project layout
+### Basic command
 
-- `main.go` - program entrypoint that calls the Cobra `Execute()` helper.
-- `cmd/` - Cobra-generated command files. `cmd/root.go` contains the root command.
-- `go.mod` / `go.sum` - Go module definition and dependencies.
-- `LICENSE` - project license.
+```bash
+commitfeed generate
+```
 
-## Development notes
+This scans your latest commits and generates two posts — one for **LinkedIn** and one for **Twitter**.
 
-- This repository uses Cobra (github.com/spf13/cobra). To add commands, use the Cobra generator or create files under `cmd/` that register subcommands with the root command.
-- Keep the module dependencies tidy with `go mod tidy`.
+Output example:
 
-## Contributing
+```
+📦 Using AI Provider: huggingface
+📰 Target Platforms: [linkedin twitter]
 
-Contributions are welcome. Please open issues or PRs for improvements, features, or bug fixes. Follow standard Go project practices and include tests where appropriate.
+✅ Generated Posts:
+🔗 LinkedIn:
+We just added a .gitignore to keep our repo tidy and introduced a Git log reader feature that pulls commit history straight into your app. Plus, a brand-new README gives an overview, build steps, and quick usage examples. Happy hacking!
 
-## License
+🐦 Twitter:
+Just dropped a .gitignore + a Git log reader 📚 + a fresh README with build & usage steps. Clean repo, ready-to-go docs, and instant commit history in your app. 🚀 #devtools #opensource
 
-This project includes a `LICENSE` file in the repository. Refer to it for the license terms.
+💡 Preview only (not posted). Use --post to share automatically.
+```
 
-## Next steps
 
-- Add meaningful subcommands and real behavior (examples: fetch commit feed, filter, export).
-- Add unit tests for commands and business logic.
-- Add CI for build and tests.
+### 🎛️ Command Options
+
+| Flag          | Description                                           | Example                      |
+| ------------- | ----------------------------------------------------- | ---------------------------- |
+| `--platforms` | Specify target platforms (`linkedin,twitter`)         | `--platforms=twitter`        |
+| `--range`     | Specify commit range                                  | `--range HEAD~5..HEAD`       |
+| `--post, -p`  | Automatically publish generated posts *(coming soon)* | `--post`                     |
+| `--help`      | Show all available options                            | `commitfeed generate --help` |
+
+---
+
+## ⚙️ Configuration
+
+CommitFeed reads its config from:
+
+```bash
+~/.commit-feed/config.json
+```
+
+You can edit it manually or re-run the setup wizard:
+
+```bash
+commitfeed init
+```
+
+---
+
+## 🧩 Project Structure
+
+```
+commit-feed/
+├── cmd/                  # Cobra command definitions
+│   ├── root.go
+│   └── generate.go
+├── internal/
+│   ├── ai/               # AI provider logic (Hugging Face, OpenAI, etc.)
+│   ├── git/              # Git log parsing utilities
+│   └── config/           # Config loader & setup wizard
+├── main.go
+├── go.mod
+└── README.md
+```
+
+---
+
+## 🔌 Supported AI Providers
+
+| Provider            | Model Example             | Free Tier | Notes                       |
+| ------------------- | ------------------------- | --------- | --------------------------- |
+| **Hugging Face**    | `openai/gpt-oss-20b:groq` | ✅ Yes     | Default option              |
+| **OpenAI**          | `gpt-4-turbo`             | ❌ Paid    | Needs OpenAI API key        |
+| **Gemini (Google)** | `gemini-1.5-pro`          | ✅ Limited | Requires Google Cloud setup |
+| **DeepSeek**        | `deepseek-coder`          | ✅ Yes     | Great for dev summaries     |
+| **Grok (xAI)**      | `grok-1`                  | ❌ Paid    | Requires xAI API key        |
+
+---
+
+## 🧠 How It Works
+
+1. CommitFeed checks that you’re in a valid Git repository.
+2. It extracts recent commits with author, date, and message.
+3. The commit messages are formatted into an AI prompt.
+4. The selected AI model generates short social media posts.
+5. The output is displayed (or optionally posted).
+
+---
+
+## 🧪 Development
+
+```bash
+# Run locally
+go run main.go generate
+
+# Add new subcommands
+cobra-cli add <command>
+
+# Clean dependencies
+go mod tidy
+```
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome!
+If you’d like to add support for another AI provider or posting platform, open an issue or submit a PR.
+
+### Ideas
+
+* Support for Mastodon, Threads, or Bluesky.
+* Markdown-to-Post formatter.
+* Scheduling & auto-posting.
+
+---
+
+## 🪪 License
+
+MIT License © 2025 [Your Name / GitHub handle]
+See the [LICENSE](./LICENSE) file for details.
+
+---
+
+## 🌟 Acknowledgments
+
+CommitFeed is powered by:
+
+* [Cobra](https://github.com/spf13/cobra) – CLI framework for Go
+* [Charm](https://charm.sh) – for terminal UI magic
+* [Hugging Face Inference API](https://huggingface.co/inference-api)
+* [OpenAI-Compatible Router](https://huggingface.co/docs/api-inference/openai_compatibility)
+
