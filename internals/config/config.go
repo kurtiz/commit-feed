@@ -32,6 +32,28 @@ func defaultConfig() *Config {
 	}
 }
 
+// Save writes a config object to disk
+func Save(cfg *Config) error {
+	path, err := Path()
+	if err != nil {
+		return err
+	}
+
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return fmt.Errorf("failed to create config directory: %v", err)
+	}
+
+	data, err := json.MarshalIndent(cfg, "", "  ")
+	if err != nil {
+		return fmt.Errorf("failed to marshal config: %v", err)
+	}
+
+	if err := os.WriteFile(path, data, 0o644); err != nil {
+		return fmt.Errorf("failed to write config: %v", err)
+	}
+	return nil
+}
+
 // Load reads the config file and merges environment overrides
 func Load() (*Config, error) {
 	path, err := Path()
@@ -40,11 +62,14 @@ func Load() (*Config, error) {
 	}
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, err
+		// If file doesn’t exist, fall back to default config
+		return defaultConfig(), nil
 	}
+
 	var cfg Config
 	if err := json.Unmarshal(data, &cfg); err != nil {
-		return nil, fmt.Errorf("invalid config format: %v", err)
+		fmt.Println("⚠️ Invalid config format, falling back to defaults.")
+		return defaultConfig(), nil
 	}
 
 	// Allow environment variable overrides
@@ -54,6 +79,12 @@ func Load() (*Config, error) {
 	if v := os.Getenv("COMMITFEED_API_KEY"); v != "" {
 		cfg.APIKey = v
 	}
+
+	// Default platforms fallback (in case file was missing field)
+	if len(cfg.DefaultPlatforms) == 0 {
+		cfg.DefaultPlatforms = []string{"linkedin", "twitter"}
+	}
+
 	return &cfg, nil
 }
 
@@ -64,8 +95,16 @@ func EnsureExists() (*Config, error) {
 		return nil, err
 	}
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		fmt.Println("🧩 No config found — launching first-time setup...\n")
-		return RunSetupWizard()
+		fmt.Println("🧩 No config found — launching first-time setup...")
+		cfg, err := RunSetupWizard()
+		if err != nil {
+			fmt.Println("⚠️ Setup canceled or failed — using default configuration.")
+			cfg = defaultConfig()
+			if saveErr := Save(cfg); saveErr != nil {
+				return nil, fmt.Errorf("failed to save default config: %v", saveErr)
+			}
+		}
+		return cfg, nil
 	}
 	return Load()
 }
