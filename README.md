@@ -22,6 +22,21 @@ Perfect for open-source maintainers, indie hackers, or dev teams who want to sha
 
 ## 📦 Installation
 
+### From binary
+
+[Download the latest binary for your platform](https://github.com/kurtiz/commit-feed/releases/latest).
+
+```bash
+chmod +x commitfeed
+./commitfeed generate
+```
+
+### Quick Install
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kurtiz/commit-feed/main/install.sh | bash
+```
+
 ### From source
 
 You’ll need **Go 1.21+** installed.
