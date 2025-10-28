@@ -1,0 +1,12 @@
+package ai
+
+import "github.com/kurtiz/commit-feed.git/internals/git"
+
+type GeneratedPosts struct {
+	LinkedIn string
+	Twitter  string
+}
+
+type Provider interface {
+	GeneratePosts(commits []git.Commit) (*GeneratedPosts, error)
+}
