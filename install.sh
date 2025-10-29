@@ -52,17 +52,21 @@ FILENAME="${DOWNLOAD_URL##*/}"
 echo "⬇️  Downloading ${FILENAME}..."
 curl -L "$DOWNLOAD_URL" -o "$TMP_DIR/$FILENAME"
 
-# --- Extract binary ---
-echo "📂 Extracting..."
+# --- Extract or move binary ---
 cd "$TMP_DIR"
-if [[ "$FILENAME" == *.zip ]]; then
-  unzip -q "$FILENAME"
-else
-  tar -xzf "$FILENAME"
-fi
 
-# Find binary (commitfeed or cf)
-BINARY_PATH=$(find . -type f \( -name "$APP_NAME" -o -name "cf" \) | head -n 1)
+if [[ "$PLATFORM" == "windows" && "$FILENAME" == *.exe ]]; then
+  echo "💾 Detected Windows executable. Skipping extraction."
+  BINARY_PATH="$TMP_DIR/$FILENAME"
+elif [[ "$FILENAME" == *.zip ]]; then
+  echo "📂 Extracting ZIP..."
+  unzip -q "$FILENAME"
+  BINARY_PATH=$(find . -type f \( -name "$APP_NAME" -o -name "cf" \) | head -n 1)
+else
+  echo "📂 Extracting TAR..."
+  tar -xzf "$FILENAME"
+  BINARY_PATH=$(find . -type f \( -name "$APP_NAME" -o -name "cf" \) | head -n 1)
+fi
 
 if [ ! -f "$BINARY_PATH" ]; then
   echo -e "${YELLOW}❌ No binary found in archive.${NC}"
@@ -73,15 +77,22 @@ chmod +x "$BINARY_PATH"
 
 # --- Install binary ---
 echo "📦 Installing to ${INSTALL_DIR}..."
-sudo mv "$BINARY_PATH" "$INSTALL_DIR/$APP_NAME"
+if [[ "$PLATFORM" == "windows" ]]; then
+  mkdir -p "$HOME/.local/bin"
+  mv "$BINARY_PATH" "$HOME/.local/bin/$APP_NAME.exe"
+  INSTALL_PATH="$HOME/.local/bin/$APP_NAME.exe"
+else
+  sudo mv "$BINARY_PATH" "$INSTALL_DIR/$APP_NAME"
+  INSTALL_PATH="$INSTALL_DIR/$APP_NAME"
+fi
 
 # --- Verify installation ---
-if command -v "$APP_NAME" >/dev/null 2>&1; then
+if command -v "$APP_NAME" >/dev/null 2>&1 || [[ -f "$INSTALL_PATH" ]]; then
   echo -e "${GREEN}✅ CommitFeed installed successfully!${NC}"
   echo -e "${BLUE}Run: ${NC}${APP_NAME} --help"
 else
-  echo -e "${YELLOW}⚠️  Installation completed but '${APP_NAME}' not found in PATH.${NC}"
-  echo "Try adding ${INSTALL_DIR} to your PATH manually."
+  echo -e "${YELLOW}⚠️  Installed but not found in PATH.${NC}"
+  echo "Try adding ${INSTALL_DIR} (or ~/.local/bin) to your PATH manually."
 fi
 
 # Cleanup
