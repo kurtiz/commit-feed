@@ -36,13 +36,16 @@ chmod +x commitfeed
 ./commitfeed generate
 ```
 
-![Animated terminal window showing installation steps for CommitFeed: a curl command to download and run the installer (curl -fsSL https://raw.githubusercontent.com/kurtiz/commit-feed/main/install.sh | bash)](./assets/install.gif)
+
 
 ### Quick Install
+
+
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/kurtiz/commit-feed/main/install.sh | bash
 ```
+<img src="./assets/install.gif">
 
 ### From source
 
