@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/kurtiz/commit-feed.git/internals/git"
+	"github.com/kurtiz/commit-feed/internals/git"
 )
 
 type DeepSeekProvider struct {

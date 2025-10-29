@@ -42,7 +42,7 @@ curl -fsSL https://raw.githubusercontent.com/kurtiz/commit-feed/main/install.sh 
 You’ll need **Go 1.21+** installed.
 
 ```bash
-git clone https://github.com/kurtiz/commit-feed.git
+git clone https://github.com/kurtiz/commit-feed
 cd commit-feed
 go build -o commitfeed .
 ```
@@ -56,7 +56,7 @@ Then run it:
 Or install directly into your `$GOPATH/bin`:
 
 ```bash
-go install github.com/kurtiz/commit-feed.git@latest
+go install github.com/kurtiz/commit-feed@latest
 ```
 
 ## 🧰 First Run Setup

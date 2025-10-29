@@ -10,9 +10,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/kurtiz/commit-feed.git/internals/ai"
-	"github.com/kurtiz/commit-feed.git/internals/config"
-	"github.com/kurtiz/commit-feed.git/internals/git"
+	"github.com/kurtiz/commit-feed/internals/ai"
+	"github.com/kurtiz/commit-feed/internals/config"
+	"github.com/kurtiz/commit-feed/internals/git"
 )
 
 var (

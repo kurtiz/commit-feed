@@ -1,4 +1,4 @@
-module github.com/kurtiz/commit-feed.git
+module github.com/kurtiz/commit-feed
 
 go 1.25.3
 

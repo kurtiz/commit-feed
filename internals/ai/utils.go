@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/kurtiz/commit-feed.git/internals/git"
+	"github.com/kurtiz/commit-feed/internals/git"
 )
 
 // buildPrompt creates an AI prompt customized for the target platforms.

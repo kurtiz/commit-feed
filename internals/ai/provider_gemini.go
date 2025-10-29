@@ -6,7 +6,7 @@ import (
 	"os"
 
 	genai "github.com/google/generative-ai-go/genai"
-	"github.com/kurtiz/commit-feed.git/internals/git"
+	"github.com/kurtiz/commit-feed/internals/git"
 	"google.golang.org/api/option"
 )
 

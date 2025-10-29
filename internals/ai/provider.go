@@ -1,6 +1,6 @@
 package ai
 
-import "github.com/kurtiz/commit-feed.git/internals/git"
+import "github.com/kurtiz/commit-feed/internals/git"
 
 type GeneratedPosts struct {
 	LinkedIn string
