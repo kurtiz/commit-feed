@@ -1,6 +1,11 @@
 
 
 # CommitFeed
+---
+![GitHub Release](https://img.shields.io/github/v/release/kurtiz/commit-feed)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/t/kurtiz/commit-feed)
+[![wakatime](https://wakatime.com/badge/user/9657174f-2430-4dfd-aaef-2b316eb71a36/project/e422536c-8bfe-4432-a7d6-42811dc51487.svg)](https://wakatime.com/badge/user/9657174f-2430-4dfd-aaef-2b316eb71a36/project/e422536c-8bfe-4432-a7d6-42811dc51487)
+
 
 > ✨ *Turn your Git commits into engaging social media updates — automatically.*
 
