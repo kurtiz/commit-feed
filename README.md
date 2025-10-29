@@ -36,6 +36,8 @@ chmod +x commitfeed
 ./commitfeed generate
 ```
 
+![Animated terminal window showing installation steps for CommitFeed: a curl command to download and run the installer (curl -fsSL https://raw.githubusercontent.com/kurtiz/commit-feed/main/install.sh | bash)](./assets/install.gif)
+
 ### Quick Install
 
 ```bash
@@ -231,3 +233,10 @@ CommitFeed is powered by:
 * [Hugging Face Inference API](https://huggingface.co/inference-api)
 * [OpenAI-Compatible Router](https://huggingface.co/docs/api-inference/openai_compatibility)
 
+
+
+curl -fsSL https://raw.githubusercontent.com/kurtiz/commit-feed/main/install.sh | bash
+
+cd ~/Documents/node/bvault-js
+commitfeed init
+commitfeed generate --platforms=twitter
