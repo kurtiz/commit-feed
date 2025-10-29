@@ -23,8 +23,8 @@ func NewGeminiProvider(apiKey string) *GeminiProvider {
 	return &GeminiProvider{client: client}
 }
 
-func (g *GeminiProvider) GeneratePosts(commits []git.Commit, platforms []string) (*GeneratedPosts, error) {
-	prompt := buildPrompt(commits, platforms)
+func (g *GeminiProvider) GeneratePosts(commits []git.Commit, platforms []string, projectContext string) (*GeneratedPosts, error) {
+	prompt := buildPrompt(commits, platforms, projectContext)
 
 	resp, err := g.client.GenerativeModel("gemini-1.5-flash").
 		GenerateContent(context.Background(), genai.Text(prompt))

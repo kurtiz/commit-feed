@@ -21,12 +21,12 @@ func NewDeepSeekProvider(apiKey string) *DeepSeekProvider {
 	return &DeepSeekProvider{apiKey: apiKey}
 }
 
-func (d *DeepSeekProvider) GeneratePosts(commits []git.Commit, platforms []string) (*GeneratedPosts, error) {
+func (d *DeepSeekProvider) GeneratePosts(commits []git.Commit, platforms []string, projectContext string) (*GeneratedPosts, error) {
 	body := map[string]interface{}{
 		"model": "deepseek-chat",
 		"messages": []map[string]string{
 			{"role": "system", "content": "You are CommitFeed, summarizing commits into social posts."},
-			{"role": "user", "content": buildPrompt(commits, platforms)},
+			{"role": "user", "content": buildPrompt(commits, platforms, projectContext)},
 		},
 	}
 

@@ -24,8 +24,8 @@ func NewHuggingFaceProvider(apiKey string) *HuggingFaceProvider {
 }
 
 // GeneratePosts builds a prompt and requests AI-generated posts
-func (h *HuggingFaceProvider) GeneratePosts(commits []git.Commit, platforms []string) (*GeneratedPosts, error) {
-	prompt := buildPrompt(commits, platforms)
+func (h *HuggingFaceProvider) GeneratePosts(commits []git.Commit, platforms []string, projectContext string) (*GeneratedPosts, error) {
+	prompt := buildPrompt(commits, platforms, projectContext)
 
 	payload := map[string]interface{}{
 		"model": h.model,

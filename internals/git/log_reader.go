@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 	"time"
@@ -74,4 +75,51 @@ func GetCommits(rangeArg string, limit int) ([]Commit, error) {
 	}
 
 	return commits, nil
+}
+
+// GetProjectDescription reads README files to provide context about the project
+func GetProjectDescription() (string, error) {
+	possibleReadmes := []string{"README.md", "README.txt", "README", "readme.md", "readme.txt", "readme"}
+
+	for _, readme := range possibleReadmes {
+		if _, err := os.Stat(readme); err == nil {
+			content, err := os.ReadFile(readme)
+			if err != nil {
+				continue
+			}
+
+			// Extract first few lines or first paragraph for context
+			lines := strings.Split(string(content), "\n")
+			var description strings.Builder
+
+			for i, line := range lines {
+				line = strings.TrimSpace(line)
+				if line == "" {
+					continue
+				}
+				// Skip markdown headers and formatting
+				if strings.HasPrefix(line, "#") {
+					line = strings.TrimSpace(strings.TrimPrefix(line, "#"))
+				}
+				if strings.HasPrefix(line, ">") {
+					line = strings.TrimSpace(strings.TrimPrefix(line, ">"))
+				}
+
+				description.WriteString(line)
+				description.WriteString(" ")
+
+				// Limit to first 3-4 meaningful lines to avoid too much context
+				if i >= 3 && len(description.String()) > 200 {
+					break
+				}
+			}
+
+			result := strings.TrimSpace(description.String())
+			if len(result) > 0 {
+				return result, nil
+			}
+		}
+	}
+
+	return "", nil // No README found, return empty string
 }

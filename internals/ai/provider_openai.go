@@ -22,8 +22,8 @@ func NewOpenAIProvider(apiKey string) *OpenAIProvider {
 }
 
 // GeneratePosts uses OpenAI to generate platform-specific posts.
-func (p *OpenAIProvider) GeneratePosts(commits []git.Commit, platforms []string) (*GeneratedPosts, error) {
-	prompt := buildPrompt(commits, platforms)
+func (p *OpenAIProvider) GeneratePosts(commits []git.Commit, platforms []string, projectContext string) (*GeneratedPosts, error) {
+	prompt := buildPrompt(commits, platforms, projectContext)
 
 	resp, err := p.client.CreateChatCompletion(context.TODO(), openai.ChatCompletionRequest{
 		Model: "gpt-4o-mini",

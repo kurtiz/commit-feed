@@ -8,7 +8,7 @@ import (
 )
 
 // buildPrompt creates an AI prompt customized for the target platforms.
-func buildPrompt(commits []git.Commit, platforms []string) string {
+func buildPrompt(commits []git.Commit, platforms []string, projectContext string) string {
 	var sb strings.Builder
 
 	sb.WriteString(`You are a skilled technical copywriter who creates engaging, platform-appropriate posts for developers and tech audiences.
@@ -21,6 +21,10 @@ Each commit represents a meaningful code change, bug fix, or feature update.
 
 	for _, c := range commits {
 		sb.WriteString(fmt.Sprintf("- %s\n", c.Message))
+	}
+
+	if projectContext != "" {
+		sb.WriteString(fmt.Sprintf("\n--- Project Context ---\n%s\n", projectContext))
 	}
 
 	sb.WriteString("\n--- Platform Guidelines ---\n")

@@ -82,20 +82,26 @@ Examples:
 			return
 		}
 
-		// --- 5️⃣ Generate posts via AI provider ---
+		// --- 5️⃣ Read project context from README ---
+		projectContext, err := git.GetProjectDescription()
+		if err != nil {
+			fmt.Printf("⚠️  Could not read README for context: %v\n", err)
+		}
+
+		// --- 6️⃣ Generate posts via AI provider ---
 		provider, err := ai.NewProvider(cfg.Provider, cfg.APIKey)
 		if err != nil {
 			fmt.Println("❌ Error creating AI provider:", err)
 			return
 		}
 
-		posts, err := provider.GeneratePosts(commits, targetPlatforms)
+		posts, err := provider.GeneratePosts(commits, targetPlatforms, projectContext)
 		if err != nil {
 			fmt.Println("❌ Failed to generate posts:", err)
 			return
 		}
 
-		// --- 6️⃣ Output results ---
+		// --- 7️⃣ Output results ---
 		fmt.Println("✅ Generated Posts:")
 		for _, p := range targetPlatforms {
 			switch p {
@@ -108,7 +114,7 @@ Examples:
 			}
 		}
 
-		// --- 7️⃣ Handle posting ---
+		// --- 8️⃣ Handle posting ---
 		if postFlag {
 			fmt.Println("🚀 Posting to selected platforms...")
 
