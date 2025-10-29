@@ -32,7 +32,7 @@ Each commit represents a meaningful code change, bug fix, or feature update.
 	for _, platform := range platforms {
 		switch strings.ToLower(platform) {
 		case "linkedin":
-			sb.WriteString(`• LinkedIn: Write a friendly and professional summary (5-6 sentences). Explain what changed and why it matters to developers or users.
+			sb.WriteString(`• LinkedIn: Write a friendly and professional summary (5-6 sentences). Explain what changed and why it matters to developers or users. add relevant hashtags.
 `)
 		case "twitter", "x":
 			sb.WriteString(`• Twitter/X: Write a short, catchy summary under 280 characters. Include emojis or hashtags if natural.
@@ -44,7 +44,7 @@ Each commit represents a meaningful code change, bug fix, or feature update.
 			sb.WriteString(`• Dev.to: Write a short blog teaser — 2-3 sentences that introduce the update and invite readers to learn more.
 `)
 		case "reddit":
-			sb.WriteString(`• Reddit: Write a conversational summary that would fit in a /r/programming or /r/golang post, no emojis.
+			sb.WriteString(`• Reddit: Write a conversational summary that would fit in a /r/programming or /r/golang post, no emojis. add relevant flair if possible.
 `)
 		default:
 			sb.WriteString(fmt.Sprintf("• %s: Write a concise summary highlighting the main purpose and value of the change.\n", platform))

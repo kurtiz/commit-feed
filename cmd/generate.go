@@ -118,7 +118,7 @@ Examples:
 		if postFlag {
 			fmt.Println("🚀 Posting to selected platforms...")
 
-			// This is where you’ll later plug in your posting logic
+			// This is where the posting logic will be added
 			for _, p := range targetPlatforms {
 				switch p {
 				case "linkedin":
@@ -138,7 +138,7 @@ Examples:
 func init() {
 	rootCmd.AddCommand(generateCmd)
 
-	generateCmd.Flags().StringVarP(&rangeFlag, "range", "r", "HEAD~2..HEAD", "Git commit range to summarize (e.g. HEAD~5..HEAD)")
-	generateCmd.Flags().StringSliceVarP(&platformsFlag, "platforms", "t", nil, "Comma-separated list of platforms (e.g. linkedin,twitter)")
+	generateCmd.Flags().StringVarP(&rangeFlag, "range", "r", "HEAD", "Git commit range to summarize (e.g. HEAD~5..HEAD)")
+	generateCmd.Flags().StringSliceVarP(&platformsFlag, "platforms", "t", nil, "Comma-separated list of platforms (e.g. linkedin,twitter,reddit)")
 	generateCmd.Flags().BoolVarP(&postFlag, "post", "p", false, "Post generated content to selected platforms")
 }
