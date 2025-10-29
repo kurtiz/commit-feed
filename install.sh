@@ -55,6 +55,8 @@ curl -L "$DOWNLOAD_URL" -o "$TMP_DIR/$FILENAME"
 # --- Extract or move binary ---
 cd "$TMP_DIR"
 
+BINARY_PATH=""
+
 if [[ "$PLATFORM" == "windows" && "$FILENAME" == *.exe ]]; then
   echo "💾 Detected Windows executable. Skipping extraction."
   BINARY_PATH="$TMP_DIR/$FILENAME"
@@ -62,34 +64,40 @@ elif [[ "$FILENAME" == *.zip ]]; then
   echo "📂 Extracting ZIP..."
   unzip -q "$FILENAME"
   BINARY_PATH=$(find . -type f \( -name "$APP_NAME" -o -name "cf" \) | head -n 1)
-else
-  echo "📂 Extracting TAR..."
+elif [[ "$FILENAME" == *.tar.gz ]]; then
+  echo "📂 Extracting TAR.GZ..."
   tar -xzf "$FILENAME"
   BINARY_PATH=$(find . -type f \( -name "$APP_NAME" -o -name "cf" \) | head -n 1)
+else
+  # Raw binary
+  echo "💾 Raw binary detected. Skipping extraction."
+  BINARY_PATH="$TMP_DIR/$FILENAME"
 fi
 
 if [ ! -f "$BINARY_PATH" ]; then
-  echo -e "${YELLOW}❌ No binary found in archive.${NC}"
+  echo -e "${YELLOW}❌ No binary found.${NC}"
   exit 1
 fi
 
 chmod +x "$BINARY_PATH"
 
-# --- Install binary ---
+# --- Install binaries ---
 echo "📦 Installing to ${INSTALL_DIR}..."
 if [[ "$PLATFORM" == "windows" ]]; then
   mkdir -p "$HOME/.local/bin"
-  mv "$BINARY_PATH" "$HOME/.local/bin/$APP_NAME.exe"
+  cp "$BINARY_PATH" "$HOME/.local/bin/$APP_NAME.exe"
+  cp "$BINARY_PATH" "$HOME/.local/bin/cf.exe"
   INSTALL_PATH="$HOME/.local/bin/$APP_NAME.exe"
 else
-  sudo mv "$BINARY_PATH" "$INSTALL_DIR/$APP_NAME"
+  sudo cp "$BINARY_PATH" "$INSTALL_DIR/$APP_NAME"
+  sudo cp "$BINARY_PATH" "$INSTALL_DIR/cf"
   INSTALL_PATH="$INSTALL_DIR/$APP_NAME"
 fi
 
 # --- Verify installation ---
-if command -v "$APP_NAME" >/dev/null 2>&1 || [[ -f "$INSTALL_PATH" ]]; then
+if command -v "$APP_NAME" >/dev/null 2>&1 && command -v "cf" >/dev/null 2>&1; then
   echo -e "${GREEN}✅ CommitFeed installed successfully!${NC}"
-  echo -e "${BLUE}Run: ${NC}${APP_NAME} --help"
+  echo -e "${BLUE}Run: ${NC}${APP_NAME} --help or cf --help"
 else
   echo -e "${YELLOW}⚠️  Installed but not found in PATH.${NC}"
   echo "Try adding ${INSTALL_DIR} (or ~/.local/bin) to your PATH manually."
