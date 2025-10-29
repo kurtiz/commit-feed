@@ -112,7 +112,14 @@ Just dropped a .gitignore + a Git log reader 📚 + a fresh README with build & 
 ```
 
 
-### 🎛️ Command Options
+### 🗃️ Commands
+
+| Flag          | Description                                           | Example                      |
+| ------------- | ----------------------------------------------------- | ---------------------------- |
+| `generate`    | Generates posts for the latest commits                | `commitfeed generate`        |
+| `init`        | Initializes your config file                          | `commitfeed init`            |
+
+### 🎛️ Generate flags/Options
 
 | Flag          | Description                                           | Example                      |
 | ------------- | ----------------------------------------------------- | ---------------------------- |
@@ -145,7 +152,8 @@ commitfeed init
 commit-feed/
 ├── cmd/                  # Cobra command definitions
 │   ├── root.go
-│   └── generate.go
+│   ├── generate.go
+│   └── init.go
 ├── internal/
 │   ├── ai/               # AI provider logic (Hugging Face, OpenAI, etc.)
 │   ├── git/              # Git log parsing utilities
